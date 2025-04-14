@@ -1,0 +1,156 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antonio España Games - Juegos Gratis</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #121212;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #1f1f1f;
+      padding: 2rem;
+      text-align: center;
+    }
+    header h1 {
+      color: #00ffc3;
+      margin: 0;
+    }
+    nav {
+      background: #000;
+      text-align: center;
+      padding: 1rem;
+    }
+    nav a {
+      margin: 0 10px;
+      color: #ccc;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    nav a:hover {
+      color: #00ffc3;
+    }
+    .container {
+      padding: 2rem;
+    }
+    .game {
+      margin-bottom: 3rem;
+      padding: 1rem;
+      background-color: #1f1f1f;
+      border-radius: 10px;
+    }
+    .game h2 {
+      color: #00ffc3;
+    }
+    canvas {
+      background-color: #000;
+      display: block;
+      margin: 1rem auto;
+      border: 2px solid #00ffc3;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Antonio España Games</h1>
+    <p>Juega gratis sin descargar nada - 10 juegos clásicos integrados</p>
+  </header>
+
+  <nav>
+    <a href="#snake">Snake</a>
+    <a href="#tetris">Tetris</a>
+    <a href="#2048">2048</a>
+    <a href="#pong">Pong</a>
+    <a href="#breakout">Breakout</a>
+    <a href="#flappy">Flappy</a>
+    <a href="#invaders">Space Invaders</a>
+    <a href="#simon">Simon Dice</a>
+    <a href="#memory">Memory</a>
+    <a href="#dino">Dino</a>
+  </nav>
+
+  <div class="container">
+    <div class="game" id="snake">
+      <h2>Snake</h2>
+      <canvas id="snakeCanvas" width="400" height="400"></canvas>
+    </div>
+    <!-- Otros juegos se integrarán aquí después -->
+  </div>
+
+  <footer style="text-align:center; padding:2rem; background:#111; color:#aaa;">
+    &copy; 2025 Antonio España Games. Todos los derechos reservados.
+  </footer>
+
+  <script>
+    const canvas = document.getElementById("snakeCanvas");
+    const ctx = canvas.getContext("2d");
+
+    const box = 20;
+    let snake = [{ x: 9 * box, y: 10 * box }];
+    let direction = "RIGHT";
+
+    let food = {
+      x: Math.floor(Math.random() * 19 + 1) * box,
+      y: Math.floor(Math.random() * 19 + 1) * box,
+    };
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "ArrowLeft" && direction !== "RIGHT") direction = "LEFT";
+      if (event.key === "ArrowUp" && direction !== "DOWN") direction = "UP";
+      if (event.key === "ArrowRight" && direction !== "LEFT") direction = "RIGHT";
+      if (event.key === "ArrowDown" && direction !== "UP") direction = "DOWN";
+    });
+
+    function draw() {
+      ctx.fillStyle = "#000";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let i = 0; i < snake.length; i++) {
+        ctx.fillStyle = i === 0 ? "#00ffc3" : "#00bfa6";
+        ctx.fillRect(snake[i].x, snake[i].y, box, box);
+      }
+
+      ctx.fillStyle = "#f00";
+      ctx.fillRect(food.x, food.y, box, box);
+
+      let headX = snake[0].x;
+      let headY = snake[0].y;
+
+      if (direction === "LEFT") headX -= box;
+      if (direction === "UP") headY -= box;
+      if (direction === "RIGHT") headX += box;
+      if (direction === "DOWN") headY += box;
+
+      if (
+        headX < 0 || headX >= canvas.width ||
+        headY < 0 || headY >= canvas.height ||
+        snake.some(seg => seg.x === headX && seg.y === headY)
+      ) {
+        clearInterval(game);
+        alert("¡Game Over!");
+        return;
+      }
+
+      if (headX === food.x && headY === food.y) {
+        food = {
+          x: Math.floor(Math.random() * 19 + 1) * box,
+          y: Math.floor(Math.random() * 19 + 1) * box,
+        };
+      } else {
+        snake.pop();
+      }
+
+      const newHead = { x: headX, y: headY };
+      snake.unshift(newHead);
+    }
+
+    const game = setInterval(draw, 100);
+  </script>
+</body>
+</html>
